@@ -19,11 +19,13 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
             if str(folders) == materials:
                 startChecking = True
                 newOutputFolderPath = os.path.join(str(outputFolderPath), materials)
+                fullPathMinusMaterials = os.path.join(str(outputFolderPath))
                 if not os.path.exists(newOutputFolderPath):
                         os.makedirs(newOutputFolderPath)
             if startChecking == True:
                 fullFolderPath = str(folders)
-                fullPath = os.path.join(str(newOutputFolderPath), str(fullFolderPath))
+                fullPath = os.path.join(str(fullPathMinusMaterials), str(fullFolderPath))
+                fullPathMinusMaterials = fullPath
                 if not os.path.exists(fullPath):
                     os.makedirs(fullPath)
 
