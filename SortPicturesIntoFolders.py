@@ -30,10 +30,34 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
                     os.makedirs(fullPath)
                     for path, folders, files, in os.walk(thisFolderPath):
                         for fileName in files:
-                            print(originalFileName)
                             if str(Path(fileName).stem) == str(Path(originalFileName).stem):
-                                fullVTFPath = os.path.join(str(path), str(fileName))
-                                shutil.copy2(fullVTFPath, fullPath)
+                                if str(fileName).endswith("vmt"):
+                                    correctVMT = open(fileName, "w")
+                                    correctVMT.write(""""LightmappedGeneric"
+{
+	// Original shader: BaseTimesLightmap
+	"$basetexture" """ + str(fullPath) + """
+
+	"$texscale"	8
+	"$baseTextureOffset" "[0.5 0.5]"
+	"Proxies"
+     	{
+	"TextureTransform"
+            {
+		"translateVar" "$baseTextureOffset"
+		"scaleVar"     "$texscale"
+		"resultVar"    "$baseTextureTransform"
+            }
+     	}
+}
+""")
+                                    correctVMT.close()
+                                    fullVMTPath = os.path.abspath(correctVMT.name)
+                                    shutil.copy2(fullVMTPath, fullPath)
+                                    os.remove(fullVMTPath)
+                                else:
+                                    fullVTFPath = os.path.join(str(path), str(fileName))
+                                    shutil.copy2(fullVTFPath, fullPath)
 
 
 ##for path, folders, files, in os.walk(thisFolderPath):
