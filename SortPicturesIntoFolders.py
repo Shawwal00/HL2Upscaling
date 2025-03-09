@@ -28,16 +28,21 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
                 fullPathMinusMaterials = fullPath
                 if not os.path.exists(fullPath):
                     os.makedirs(fullPath)
+                    for path, folders, files, in os.walk(thisFolderPath):
+                        for fileName in files:
+                            print(originalFileName)
+                            if str(Path(fileName).stem) == str(Path(originalFileName).stem):
+                                fullVTFPath = os.path.join(str(path), str(fileName))
+                                shutil.copy2(fullVTFPath, fullPath)
 
 
-
-for path, folders, files, in os.walk(thisFolderPath):
-    for fileName in files:
-        for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath):
-            for originalFileName in originalFiles:
-                if str(Path(fileName).stem) in str(Path(originalFileName).stem):
-                     fullPath = os.path.join(str(thisFolderPath), str(path), str(fileName))
-                     shutil.copy2(fullPath, outputFolderPath)
+##for path, folders, files, in os.walk(thisFolderPath):
+##   for fileName in files:
+##        for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath):
+##            for originalFileName in originalFiles:
+##               if str(Path(fileName).stem) in str(Path(originalFileName).stem):
+##                     fullPath = os.path.join(str(thisFolderPath), str(path), str(fileName))
+##                     shutil.copy2(fullPath, outputFolderPath)
 
 
 
