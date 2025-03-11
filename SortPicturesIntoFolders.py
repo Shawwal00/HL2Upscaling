@@ -38,7 +38,7 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
 	// Original shader: BaseTimesLightmap
 	"$basetexture" """ + str(fullPath) + """
 
-	"$texscale"	8
+	"$texscale"	4
 	"$baseTextureOffset" "[0.5 0.5]"
 	"Proxies"
      	{
