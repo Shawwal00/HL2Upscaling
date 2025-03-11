@@ -29,14 +29,15 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
                 if not os.path.exists(fullPath):
                     os.makedirs(fullPath)
                     for path, folders, files, in os.walk(thisFolderPath):
-                        for fileName in files:
-                            if str(Path(fileName).stem) == str(Path(originalFileName).stem):
-                                if str(fileName).endswith("vmt"):
-                                    correctVMT = open(fileName, "w")
-                                    correctVMT.write(""""LightmappedGeneric"
+                        for originalFileName in originalFiles:
+                            for fileName in files:
+                                if str(Path(fileName).stem) == str(Path(originalFileName).stem):
+                                    if str(fileName).endswith("vmt"):
+                                        correctVMT = open(fileName, "w")
+                                        correctVMT.write(""" "LightmappedGeneric"
 {
 	// Original shader: BaseTimesLightmap
-	"$basetexture" """ + str(fullPath) + """
+	"$basetexture" """+'"'+str(fullFolderPath).capitalize() + "/" + str(Path(fileName).stem)+'"'+ """
 
 	"$texscale"	4
 	"$baseTextureOffset" "[0.5 0.5]"
@@ -51,13 +52,13 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
      	}
 }
 """)
-                                    correctVMT.close()
-                                    fullVMTPath = os.path.abspath(correctVMT.name)
-                                    shutil.copy2(fullVMTPath, fullPath)
-                                    os.remove(fullVMTPath)
-                                else:
-                                    fullVTFPath = os.path.join(str(path), str(fileName))
-                                    shutil.copy2(fullVTFPath, fullPath)
+                                        correctVMT.close()
+                                        fullVMTPath = os.path.abspath(correctVMT.name)
+                                        shutil.copy2(fullVMTPath, fullPath)
+                                        os.remove(fullVMTPath)
+                                    else:
+                                        fullVTFPath = os.path.join(str(path), str(fileName))
+                                        shutil.copy2(fullVTFPath, fullPath)
 
 
 ##for path, folders, files, in os.walk(thisFolderPath):
