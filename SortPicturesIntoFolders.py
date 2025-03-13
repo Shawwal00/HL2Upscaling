@@ -45,9 +45,18 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
                                 if str(Path(fileName).stem) == str(Path(originalFileName).stem):
                                     if str(fileName).endswith("vmt"):
                                         baseTexturePath = rootbaseTexture + "/" + str(Path(fileName).stem) + '"'
-                                        print(baseTexturePath)
                                         correctVMT = open(fileName, "w")
-                                        correctVMT.write(""" "LightmappedGeneric"
+                                        if "decals" in baseTexturePath or "Decals" in baseTexturePath:
+                                           correctVMT.write( """"VertexLitGeneric"
+{
+	"$basetexture" """+ baseTexturePath + """ 
+	"$decal" 1
+
+	"$decalscale" 0.025
+}""")
+
+                                        else:
+                                            correctVMT.write(""" "LightmappedGeneric"
                                                          
 {
 	// Original shader: BaseTimesLightmap
