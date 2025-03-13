@@ -6,6 +6,7 @@ from pathlib import Path
 originalFolderPath = sys.argv[1]
 thisFolderPath = sys.argv[2]
 outputFolderPath = sys.argv[3]
+normalFolder = sys.argv[4]
 
 materials = str("materials")
 startChecking = False
@@ -15,6 +16,8 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
         splitPath = Path(str(originalPath)).parts
         startChecking = False
         fullFolderPath = None 
+        baseTexturePath = None
+        rootbaseTexture = None
         for folders in splitPath:
             if str(folders) == materials:
                 startChecking = True
@@ -23,6 +26,14 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
                 if not os.path.exists(newOutputFolderPath):
                         os.makedirs(newOutputFolderPath)
             if startChecking == True:
+                if baseTexturePath == None:
+                    baseTexturePath = 1
+                elif baseTexturePath == 1:
+                    baseTexturePath = '"' + str(folders).capitalize()
+                    rootbaseTexture = baseTexturePath
+                else:  
+                    baseTexturePath = baseTexturePath + "/" + str(folders)
+                    rootbaseTexture = baseTexturePath
                 fullFolderPath = str(folders)
                 fullPath = os.path.join(str(fullPathMinusMaterials), str(fullFolderPath))
                 fullPathMinusMaterials = fullPath
@@ -33,11 +44,14 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
                             for fileName in files:
                                 if str(Path(fileName).stem) == str(Path(originalFileName).stem):
                                     if str(fileName).endswith("vmt"):
+                                        baseTexturePath = rootbaseTexture + "/" + str(Path(fileName).stem) + '"'
+                                        print(baseTexturePath)
                                         correctVMT = open(fileName, "w")
                                         correctVMT.write(""" "LightmappedGeneric"
+                                                         
 {
 	// Original shader: BaseTimesLightmap
-	"$basetexture" """+'"'+str(fullFolderPath).capitalize() + "/" + str(Path(fileName).stem)+'"'+ """
+	"$basetexture" """+ baseTexturePath + """
 
 	"$texscale"	4
 	"$baseTextureOffset" "[0.5 0.5]"
@@ -59,6 +73,12 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
                                     else:
                                         fullVTFPath = os.path.join(str(path), str(fileName))
                                         shutil.copy2(fullVTFPath, fullPath)
+                    for path, folders, files, in os.walk(normalFolder):
+                        for originalFileName in originalFiles:
+                            for fileName in files:
+                                if str(Path(fileName).stem) == str(Path(originalFileName).stem):
+                                    fullVTFPath = os.path.join(str(path), str(fileName))
+                                    shutil.copy2(fullVTFPath, fullPath)
 
 
 ##for path, folders, files, in os.walk(thisFolderPath):
