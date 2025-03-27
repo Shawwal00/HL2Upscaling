@@ -56,17 +56,59 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
 }""")
 
                                         elif "Models" in baseTexturePath:
-                                            correctVMT.write(""" "VertexLitGeneric"
+                                            done = False
+                                            for pathNormal, foldersNormal, filesNormal, in os.walk(normalFolder):
+                                                for fileNameNormal in filesNormal:
+                                                    if (str(fileNameNormal).startswith(Path(fileName).stem)):
+                                                        done = True
+                                            if done == True:
+                                                correctVMT.write(""" "VertexLitGeneric"
                                                          
 {
-	// Original shader: VertexLitMaskedEnvMappedTexture
+	// Original shader: VertexLitTexture
 
 	"$basetexture" """+ baseTexturePath +'"' + """
 	"$bumpmap" """+ baseTexturePath + '_normal' + '"' + """
 }
 """)
+                                            else:
+                                                correctVMT.write(""" "VertexLitGeneric"
+                                                         
+{
+	// Original shader: VertexLitTexture
+
+	"$basetexture" """+ baseTexturePath +'"' + """
+}
+""")
                                         else:
-                                            correctVMT.write(""" "LightmappedGeneric"
+                                            done = False
+                                            for pathNormal, foldersNormal, filesNormal, in os.walk(normalFolder):
+                                                for fileNameNormal in filesNormal:
+                                                    if (str(fileNameNormal).startswith(Path(fileName).stem)):
+                                                        done = True
+                                            if done == True:
+                                                correctVMT.write(""" "LightmappedGeneric"
+                                                         
+{
+	// Original shader: BaseTimesLightmap
+	"$basetexture" """+ baseTexturePath + '"' + """
+    "$bumpmap" """+ baseTexturePath + '_normal' + '"' + """
+
+	"$texscale"	4
+	"$baseTextureOffset" "[0.5 0.5]"
+	"Proxies"
+     	{
+	"TextureTransform"
+            {
+		"translateVar" "$baseTextureOffset"
+		"scaleVar"     "$texscale"
+		"resultVar"    "$baseTextureTransform"
+            }
+     	}
+}
+""")
+                                            else:
+                                                correctVMT.write(""" "LightmappedGeneric"
                                                          
 {
 	// Original shader: BaseTimesLightmap
@@ -85,6 +127,7 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
      	}
 }
 """)
+
                                         correctVMT.close()
                                         fullVMTPath = os.path.abspath(correctVMT.name)
                                         shutil.copy2(fullVMTPath, fullPath)
