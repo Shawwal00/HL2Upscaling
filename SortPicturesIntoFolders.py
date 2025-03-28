@@ -8,6 +8,8 @@ thisFolderPath = sys.argv[2]
 outputFolderPath = sys.argv[3]
 normalFolder = sys.argv[4]
 
+allStrings = ["cable", "composite", "console", "customcubemaps", "debug", "effects", "environment maps", "gamepadui", "hlmv", "matsys_regressiontest", "particle", "perftest", "scripted", "shadertest", "sun", "tools", "vgui", "voice", "sprites", "decals"]
+
 materials = str("materials")
 startChecking = False
 
@@ -46,16 +48,7 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
                                     if str(fileName).endswith("vmt"):
                                         baseTexturePath = rootbaseTexture + "/" + str(Path(fileName).stem)
                                         correctVMT = open(fileName, "w")
-                                        if "decals" in baseTexturePath or "Decals" in baseTexturePath:
-                                           correctVMT.write( """"VertexLitGeneric"
-{
-	"$basetexture" """+ baseTexturePath + '"' + """ 
-	"$decal" 1
-
-	"$decalscale" 0.25
-}""")
-
-                                        elif "Models" in baseTexturePath:
+                                        if "Models" in baseTexturePath:
                                             done = False
                                             for pathNormal, foldersNormal, filesNormal, in os.walk(normalFolder):
                                                 for fileNameNormal in filesNormal:
@@ -130,18 +123,38 @@ for originalPath, originalFolders, originalFiles, in os.walk(originalFolderPath)
 
                                         correctVMT.close()
                                         fullVMTPath = os.path.abspath(correctVMT.name)
-                                        shutil.copy2(fullVMTPath, fullPath)
-                                        os.remove(fullVMTPath)
+                                        doNotCopy = True
+                                        for string in allStrings:
+                                            if string in str(fullPath):
+                                                doNotCopy = False
+                                                os.remove(fullVMTPath)
+                                                break
+                                        if doNotCopy == True:
+                                            shutil.copy2(fullVMTPath, fullPath)
+                                            os.remove(fullVMTPath)
                                     else:
+                                        doNotCopy = True
                                         fullVTFPath = os.path.join(str(path), str(fileName))
-                                        shutil.copy2(fullVTFPath, fullPath)
+                                        for string in allStrings:
+                                            if string in str(fullPath):
+                                                doNotCopy = False
+                                                os.remove(fullVTFPath)
+                                                break
+                                        if doNotCopy == True:
+                                            shutil.copy2(fullVTFPath, fullPath)
                     for path, folders, files, in os.walk(normalFolder):
                         for originalFileName in originalFiles:
                             for fileName in files:
                                 if str(Path(fileName).stem) == str(Path(originalFileName).stem):
+                                    doNotCopy = True
                                     fullVTFPath = os.path.join(str(path), str(fileName))
-                                    shutil.copy2(fullVTFPath, fullPath)
-
+                                    for string in allStrings:
+                                        if string in str(fullPath):
+                                            doNotCopy = False
+                                            os.remove(fullVTFPath)
+                                            break
+                                    if doNotCopy == True:
+                                        shutil.copy2(fullVTFPath, fullPath)
 
 ##for path, folders, files, in os.walk(thisFolderPath):
 ##   for fileName in files:

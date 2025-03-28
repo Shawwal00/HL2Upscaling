@@ -6,7 +6,7 @@ originalFolderPath = sys.argv[1]
 toCopyFolder = sys.argv[2]
 normalFolder = sys.argv[3]
 
-allStrings = ["cable", "composite", "console", "customcubemaps", "debug", "effects", "environment maps", "gamepadui", "hlmv", "matsys_regressiontest", "particle", "perftest", "scripted", "shadertest", "sun", "tools", "vgui", "voice", "sprites"]
+allStrings = ["cable", "composite", "console", "customcubemaps", "debug", "effects", "environment maps", "gamepadui", "hlmv", "matsys_regressiontest", "particle", "perftest", "scripted", "shadertest", "sun", "tools", "vgui", "voice", "sprites", "decals"]
 
 for path, folders, files, in os.walk(originalFolderPath):
     for fileName in files:
